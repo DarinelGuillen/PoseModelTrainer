@@ -83,6 +83,9 @@ history = model.fit(
     validation_data=validation_generator
 )
 
+# Save the trained model
+model.save('custom_cnn_model')
+
 # Evaluate the model
 loss, acc = model.evaluate(validation_generator)
 print(f"Validation accuracy: {acc * 100:.2f}%")

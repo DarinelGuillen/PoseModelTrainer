@@ -1,24 +1,12 @@
 import cv2
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import model_from_json
+from tensorflow.keras.models import load_model
 from PIL import Image, ImageOps
 import os
 
-# Load the model architecture
-with open('C:/Users/darin/Documents/8B/tensorflow/model_architecture.json', 'r') as json_file:
-    model_json = json_file.read()
-
-# Define the model
-model = model_from_json(model_json)
-
-# Load the weights
-model.load_weights('C:/Users/darin/Documents/8B/tensorflow/model_weights.h5')
-
-# Compile the model
-model.compile(optimizer='adam',
-              loss='categorical_crossentropy',
-              metrics=['accuracy'])
+# Load the trained model
+model = load_model('custom_cnn_model')
 
 # Load class labels
 labels_path = 'C:/Users/darin/Documents/8B/tensorflow/labels.txt'
@@ -40,7 +28,7 @@ while True:
     image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     image = ImageOps.fit(image, (224, 224), Image.LANCZOS)
     image_array = np.asarray(image)
-    normalized_image_array = (image_array.astype(np.float32) / 255.0)  # Note: changed to match training normalization
+    normalized_image_array = (image_array.astype(np.float32) / 255.0)
     data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
     data[0] = normalized_image_array
 
