@@ -17,6 +17,9 @@ train_datagen = ImageDataGenerator(
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
     validation_split=0.2  # Use 20% of the data for validation
 )
 
@@ -41,7 +44,7 @@ validation_generator = train_datagen.flow_from_directory(
 # Print class indices
 print("Class indices:", train_generator.class_indices)
 
-# Define a custom CNN model
+# Define a custom CNN model with dropout for regularization
 class CustomCNN(tf.keras.Model):
     def __init__(self, num_classes):
         super(CustomCNN, self).__init__()
