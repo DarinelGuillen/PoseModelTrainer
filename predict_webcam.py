@@ -6,7 +6,8 @@ from PIL import Image, ImageOps
 import os
 
 # Load the trained model
-model = load_model('custom_cnn_model')
+model_save_path = 'custom_cnn_model'
+model = load_model(model_save_path)
 
 # Load class labels
 labels_path = 'C:/Users/darin/Documents/8B/tensorflow/labels.txt'

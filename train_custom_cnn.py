@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models, utils
+from tensorflow.keras import layers, models
 import os
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
@@ -37,6 +37,9 @@ validation_generator = train_datagen.flow_from_directory(
     class_mode='categorical',
     subset='validation'  # Set as validation data
 )
+
+# Print class indices
+print("Class indices:", train_generator.class_indices)
 
 # Define a custom CNN model
 class CustomCNN(tf.keras.Model):
@@ -84,7 +87,9 @@ history = model.fit(
 )
 
 # Save the trained model
-model.save('custom_cnn_model')
+model_save_path = 'custom_cnn_model'
+model.save(model_save_path)
+print(f"Model saved to {model_save_path}")
 
 # Evaluate the model
 loss, acc = model.evaluate(validation_generator)
