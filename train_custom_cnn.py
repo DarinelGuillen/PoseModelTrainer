@@ -17,9 +17,9 @@ train_datagen = ImageDataGenerator(
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True,
-    rotation_range=20,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
+    rotation_range=20,  # Added rotation for augmentation
+    width_shift_range=0.2,  # Added width shift for augmentation
+    height_shift_range=0.2,  # Added height shift for augmentation
     validation_split=0.2  # Use 20% of the data for validation
 )
 
@@ -56,7 +56,7 @@ class CustomCNN(tf.keras.Model):
         self.pool3 = layers.MaxPooling2D((2, 2))
         self.flatten = layers.Flatten()
         self.fc1 = layers.Dense(256, activation='relu')
-        self.dropout = layers.Dropout(0.5)
+        self.dropout = layers.Dropout(0.5)  # Added dropout for regularization
         self.fc2 = layers.Dense(num_classes, activation='softmax')
 
     def call(self, x):
