@@ -1,2 +1,5 @@
-T_pose
 Arms_Up
+Hands_hips
+T_pose
+Neutral
+T_pose
