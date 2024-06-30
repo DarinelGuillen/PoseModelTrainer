@@ -3,3 +3,4 @@ tf_env/
 keras_model.h5
 data/
 custom_cnn_model/
+testing data/
