@@ -34,8 +34,8 @@ class CustomCNN(tf.keras.Model):
         return self.fc2(x)
 
 # Load the trained model with the custom layer
-model_save_path = 'custom_cnn_model.h5'
-model = load_model(model_save_path, custom_objects={'CustomCNN': CustomCNN})
+model_save_path = 'custom_cnn_model_saved'
+model = tf.keras.models.load_model(model_save_path, custom_objects={'CustomCNN': CustomCNN})
 
 # Load class labels
 labels_path = 'C:/Users/darin/Documents/8B/tensorflow/labels.txt'
@@ -66,8 +66,8 @@ while True:
     index = np.argmax(prediction)
     predicted_label = class_names[index]
 
-    # Display the resulting frame
-    cv2.putText(frame, f"Predicted: {predicted_label}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+    # Display the resulting frame with prediction percentages
+    cv2.putText(frame, f"Predicted: {predicted_label} ({prediction[0][index] * 100:.2f}%)", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imshow('Webcam', frame)
 
     # Break the loop on 'q' key press

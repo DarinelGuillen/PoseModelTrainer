@@ -22,3 +22,19 @@ Validation accuracy per epoch: [0.3475479781627655, 0.35181236267089844]
 Final validation accuracy: 35.39%
 ==================================================
 
+Training log for 2024-07-02 19:21:04
+Class indices: {'Arms_up': 0, 'Hands_hips': 1, 'Neutral': 2, 'T-pose': 3}
+Epochs: 2
+Accuracy per epoch: [0.2521231472492218, 0.31422504782676697]
+Validation accuracy per epoch: [0.25799572467803955, 0.31982943415641785]
+Final validation accuracy: 32.62%
+==================================================
+
+Training log for 2024-07-02 19:29:54
+Class indices: {'Arms_up': 0, 'Hands_hips': 1, 'Neutral': 2, 'T-pose': 3}
+Epochs: 3
+Accuracy per epoch: [0.23354564607143402, 0.3290870487689972, 0.4739915132522583]
+Validation accuracy per epoch: [0.24733474850654602, 0.3923240900039673, 0.5522388219833374]
+Final validation accuracy: 55.44%
+==================================================
+
