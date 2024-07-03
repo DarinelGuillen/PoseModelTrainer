@@ -2,12 +2,40 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+from tensorflow.keras import layers
 from PIL import Image, ImageOps
 import os
 
-# Load the trained model
-model_save_path = 'custom_cnn_model'
-model = load_model(model_save_path)
+# Define the custom layer class again
+class CustomCNN(tf.keras.Model):
+    def __init__(self, num_classes):
+        super(CustomCNN, self).__init__()
+        self.conv1 = layers.Conv2D(32, (3, 3), activation='relu')
+        self.pool1 = layers.MaxPooling2D((2, 2))
+        self.conv2 = layers.Conv2D(64, (3, 3), activation='relu')
+        self.pool2 = layers.MaxPooling2D((2, 2))
+        self.conv3 = layers.Conv2D(128, (3, 3), activation='relu')
+        self.pool3 = layers.MaxPooling2D((2, 2))
+        self.flatten = layers.Flatten()
+        self.fc1 = layers.Dense(256, activation='relu')
+        self.dropout = layers.Dropout(0.5)  # Added dropout for regularization
+        self.fc2 = layers.Dense(num_classes, activation='softmax')
+
+    def call(self, x):
+        x = self.conv1(x)
+        x = self.pool1(x)
+        x = self.conv2(x)
+        x = self.pool2(x)
+        x = self.conv3(x)
+        x = self.pool3(x)
+        x = self.flatten(x)
+        x = self.fc1(x)
+        x = self.dropout(x)
+        return self.fc2(x)
+
+# Load the trained model with the custom layer
+model_save_path = 'custom_cnn_model.h5'
+model = load_model(model_save_path, custom_objects={'CustomCNN': CustomCNN})
 
 # Load class labels
 labels_path = 'C:/Users/darin/Documents/8B/tensorflow/labels.txt'
