@@ -38,3 +38,11 @@ Validation accuracy per epoch: [0.24733474850654602, 0.3923240900039673, 0.55223
 Final validation accuracy: 55.44%
 ==================================================
 
+Training log for 2024-07-03 22:50:40
+Class indices: {'Arms_up': 0, 'Hands_hips': 1, 'Neutral': 2, 'T-pose': 3}
+Epochs: 3
+Accuracy per epoch: [0.22876857221126556, 0.25477707386016846, 0.25477707386016846]
+Validation accuracy per epoch: [0.2558635473251343, 0.2558635473251343, 0.2558635473251343]
+Final validation accuracy: 25.59%
+==================================================
+

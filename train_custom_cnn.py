@@ -4,6 +4,8 @@ import os
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from datetime import datetime
 import matplotlib.pyplot as plt
+import cv2
+import numpy as np
 
 # Directorios
 base_dir = 'C:/Users/darin/Documents/8B/tensorflow/data'
@@ -13,6 +15,46 @@ charts_dir = 'C:/Users/darin/Documents/8B/tensorflow/charts'
 # Parámetros de imagen
 img_height, img_width = 224, 224
 batch_size = 32
+
+# Función de preprocesamiento de imágenes usando OpenCV
+def preprocess_image(image):
+    # Convertir a escala de grises
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Aplicar filtro de Gaussian Blur
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Asegurarse de que la imagen es de tipo CV_8U
+    blurred = np.uint8(blurred)
+
+    # Aplicar detección de bordes
+    edged = cv2.Canny(blurred, 50, 150)
+
+    # Normalizar la imagen
+    normalized = cv2.normalize(edged, None, 0, 255, cv2.NORM_MINMAX)
+
+    # Redimensionar la imagen al tamaño requerido por la CNN
+    resized = cv2.resize(normalized, (img_height, img_width))
+
+    # Convertir de nuevo a RGB (3 canales) ya que el modelo espera 3 canales
+    resized_rgb = cv2.cvtColor(resized, cv2.COLOR_GRAY2RGB)
+
+    return resized_rgb
+
+# Clase personalizada para el generador de datos que incorpora preprocesamiento con OpenCV
+class CustomImageDataGenerator(tf.keras.utils.Sequence):
+    def __init__(self, generator):
+        self.generator = generator
+
+    def __len__(self):
+        return len(self.generator)
+
+    def __getitem__(self, index):
+        images, labels = self.generator[index]
+        processed_images = np.array([preprocess_image(image) for image in images])
+        # Asegurarse de que las imágenes están en el formato correcto
+        processed_images = processed_images.astype('float32') / 255.0
+        return processed_images, labels
 
 # Data augmentation y normalización para entrenamiento
 train_datagen = ImageDataGenerator(
@@ -44,8 +86,12 @@ validation_generator = train_datagen.flow_from_directory(
     subset='validation'
 )
 
+# Envolver los generadores con el preprocesamiento personalizado
+train_generator = CustomImageDataGenerator(train_generator)
+validation_generator = CustomImageDataGenerator(validation_generator)
+
 # Imprimir índices de clases
-class_indices = train_generator.class_indices
+class_indices = train_generator.generator.class_indices
 print("Class indices:", class_indices)
 
 # Definir un modelo CNN personalizado con dropout para regularización
@@ -76,7 +122,7 @@ class CustomCNN(tf.keras.Model):
         return self.fc2(x)
 
 # Obtener número de clases
-num_classes = len(train_generator.class_indices)
+num_classes = len(train_generator.generator.class_indices)
 
 # Instanciar el modelo
 model = CustomCNN(num_classes=num_classes)
@@ -111,13 +157,13 @@ def save_accuracy_plot(history, save_dir):
 # Entrenar el modelo
 history = model.fit(
     train_generator,
-    epochs=3,  # Reduce the number of epochs for quick testing
+    epochs=2,  # Reduce the number of epochs for quick testing
     validation_data=validation_generator
 )
 
-# Guardar el modelo entrenado en formato SavedModel
-model_save_path = 'custom_cnn_model_saved'
-model.save(model_save_path, save_format='tf')
+# Guardar el modelo entrenado en formato H5
+model_save_path = 'custom_cnn_model.h5'
+model.save(model_save_path)
 print(f"Model saved to {model_save_path}")
 
 # Evaluar el modelo

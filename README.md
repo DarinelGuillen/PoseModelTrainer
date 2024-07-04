@@ -5,9 +5,15 @@
 ```bash
 python -m venv tf_env
 tf_env\Scripts\activate
+myvenvPY311\Scripts\activate
 ```
 
 ## Instalar Requerimientos
 ```bash 
 pip install -r requirements.txt
 ```
+
+
+Graficas 
+errror final ""
+Matris de confucion
