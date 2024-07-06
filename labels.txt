@@ -1,4 +1,3 @@
 Arms_Up
-Hands_hips
 Neutral
 T_pose
