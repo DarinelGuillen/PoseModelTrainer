@@ -12,3 +12,4 @@ tf_env_new2/
 myvenvPY311/
 custom_cnn_model.keras
 custom_cnn_model.h5
+custom_cnn_model.pth

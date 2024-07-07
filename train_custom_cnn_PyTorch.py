@@ -5,39 +5,30 @@ from torchvision import datasets, transforms
 import os
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from datetime import datetime
 from torch.utils.data.sampler import SubsetRandomSampler
 import torch.nn.functional as F
-from PIL import Image  # Importar Image de PIL
+from PIL import Image
 
 # Directorios
 base_dir = 'C:/Users/darin/Documents/8B/tensorflow/data'
 train_dir = base_dir
-charts_dir = 'C:/Users/darin/Documents/8B/tensorflow/charts'
 
 # Parámetros de imagen
 img_height, img_width = 224, 224
 batch_size = 32
-validation_split = 0.2  # Fracción de los datos para validación
+validation_split = 0.2
 shuffle_dataset = True
 random_seed = 42
 
-# Función de preprocesamiento de imágenes usando OpenCV
+# Función de preprocesamiento de imágenes
 def preprocess_image(image):
-    image = np.array(image)  # Convertir imagen PIL a array de NumPy
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    blurred = np.uint8(blurred)
-    edged = cv2.Canny(blurred, 50, 150)
-    normalized = cv2.normalize(edged, None, 0, 255, cv2.NORM_MINMAX)
-    resized = cv2.resize(normalized, (img_height, img_width))
-    resized_rgb = cv2.cvtColor(resized, cv2.COLOR_GRAY2RGB)
-    return Image.fromarray(resized_rgb)  # Convertir de vuelta a imagen PIL
+    image = np.array(image)
+    resized = cv2.resize(image, (img_height, img_width))
+    return Image.fromarray(resized)
 
 # Transformaciones para entrenamiento y validación
 transform = transforms.Compose([
-    transforms.Lambda(preprocess_image),  # Preprocesamiento personalizado
+    transforms.Lambda(preprocess_image),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
@@ -76,7 +67,6 @@ class CustomCNN(nn.Module):
         self.fc1 = nn.Linear(128 * 26 * 26, 256)
         self.dropout = nn.Dropout(0.5)
         self.fc2 = nn.Linear(256, num_classes)
-        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         x = self.pool1(F.relu(self.conv1(x)))
@@ -85,7 +75,7 @@ class CustomCNN(nn.Module):
         x = self.flatten(x)
         x = F.relu(self.fc1(x))
         x = self.dropout(x)
-        x = self.softmax(self.fc2(x))
+        x = self.fc2(x)
         return x
 
 num_classes = len(dataset.classes)
@@ -96,28 +86,8 @@ model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# Función para graficar la precisión y la pérdida
-def plot_training(history):
-    epochs = range(1, len(history['train_loss']) + 1)
-    plt.figure(figsize=(12, 4))
-    plt.subplot(1, 2, 1)
-    plt.plot(epochs, history['train_loss'], label='Train Loss')
-    plt.plot(epochs, history['val_loss'], label='Validation Loss')
-    plt.title('Loss')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.subplot(1, 2, 2)
-    plt.plot(epochs, history['train_acc'], label='Train Accuracy')
-    plt.plot(epochs, history['val_acc'], label='Validation Accuracy')
-    plt.title('Accuracy')
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy')
-    plt.legend()
-    plt.show()
-
 # Entrenamiento del modelo
-num_epochs = 8  # Aumentar el número de épocas
+num_epochs = 20
 history = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': []}
 
 for epoch in range(num_epochs):
@@ -170,20 +140,3 @@ for epoch in range(num_epochs):
 model_save_path = 'custom_cnn_model.pth'
 torch.save(model.state_dict(), model_save_path)
 print(f"Model saved to {model_save_path}")
-
-# Graficar la precisión y la pérdida
-plot_training(history)
-
-# Evaluación final del modelo
-model.eval()
-correct = 0
-total = 0
-with torch.no_grad():
-    for inputs, labels in val_loader:
-        inputs, labels = inputs.to(device), labels.to(device)
-        outputs = model(inputs)
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-
-print(f'Final Validation Accuracy: {100 * correct / total:.2f}%')
