@@ -8,6 +8,8 @@ import numpy as np
 from torch.utils.data.sampler import SubsetRandomSampler
 import torch.nn.functional as F
 from PIL import Image
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
 
 # Directorios
 base_dir = 'C:/Users/darin/Documents/8B/tensorflow/data'
@@ -87,7 +89,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Entrenamiento del modelo
-num_epochs = 20
+num_epochs = 3
 history = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': []}
 
 for epoch in range(num_epochs):
@@ -136,7 +138,45 @@ for epoch in range(num_epochs):
     print(f"Epoch {epoch+1}/{num_epochs}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%, "
           f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}%")
 
-# Guardar el modelo
-model_save_path = 'custom_cnn_model.pth'
-torch.save(model.state_dict(), model_save_path)
-print(f"Model saved to {model_save_path}")
+# Evaluación y generación de la matriz de confusión
+all_preds = []
+all_labels = []
+model.eval()
+with torch.no_grad():
+    for inputs, labels in val_loader:
+        inputs, labels = inputs.to(device), labels.to(device)
+        outputs = model(inputs)
+        _, preds = torch.max(outputs, 1)
+        all_preds.extend(preds.cpu().numpy())
+        all_labels.extend(labels.cpu().numpy())
+
+# Crear la matriz de confusión
+conf_matrix = confusion_matrix(all_labels, all_preds)
+disp = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=dataset.classes)
+disp.plot(cmap=plt.cm.Blues)
+plt.xticks(rotation=45)
+
+# Guardar la gráfica de confusión en una carpeta
+charts_dir = 'charts'
+if not os.path.exists(charts_dir):
+    os.makedirs(charts_dir)
+
+# Encontrar un nombre de archivo que no sobrescriba los existentes
+file_index = 1
+file_path = os.path.join(charts_dir, f'confusion_matrix_{file_index}.png')
+while os.path.exists(file_path):
+    file_index += 1
+    file_path = os.path.join(charts_dir, f'confusion_matrix_{file_index}.png')
+
+plt.savefig(file_path)
+plt.show()
+
+# Verificar el tamaño del dataset y las particiones
+print(f"Tamaño total del dataset: {dataset_size}")
+print(f"Tamaño del conjunto de entrenamiento: {len(train_indices)}")
+print(f"Tamaño del conjunto de validación: {len(val_indices)}")
+
+# Mostrar algunos ejemplos de imágenes y etiquetas
+examples = enumerate(val_loader)
+batch_idx, (example_data, example_targets) = next(examples)
+print(f"Ejemplo de etiquetas: {example_targets[:10]}")

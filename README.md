@@ -4,7 +4,6 @@
 
 ```bash
 python -m venv tf_env
-tf_env\Scripts\activate
 myvenvPY311\Scripts\activate
 ```
 
