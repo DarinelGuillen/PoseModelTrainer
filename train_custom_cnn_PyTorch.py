@@ -55,6 +55,13 @@ val_sampler = SubsetRandomSampler(val_indices)
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, sampler=train_sampler)
 val_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, sampler=val_sampler)
 
+# Verificar la distribución de las clases en los conjuntos de entrenamiento y validación
+train_labels = [dataset[i][1] for i in train_indices]
+val_labels = [dataset[i][1] for i in val_indices]
+from collections import Counter
+print("Distribución de clases en el conjunto de entrenamiento:", Counter(train_labels))
+print("Distribución de clases en el conjunto de validación:", Counter(val_labels))
+
 # Definición del modelo en PyTorch
 class CustomCNN(nn.Module):
     def __init__(self, num_classes):
@@ -89,7 +96,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Entrenamiento del modelo
-num_epochs = 3
+num_epochs = 10  # Aumentar el número de épocas para observar el comportamiento
 history = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': []}
 
 for epoch in range(num_epochs):
@@ -149,6 +156,9 @@ with torch.no_grad():
         _, preds = torch.max(outputs, 1)
         all_preds.extend(preds.cpu().numpy())
         all_labels.extend(labels.cpu().numpy())
+
+# Verificar la distribución de las clases en el conjunto de validación
+print("Distribución de clases en el conjunto de validación:", Counter(all_labels))
 
 # Crear la matriz de confusión
 conf_matrix = confusion_matrix(all_labels, all_preds)
