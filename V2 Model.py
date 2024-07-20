@@ -39,7 +39,7 @@ def detect_pose(image):
     return keypoints
 
 # Directorios de imágenes
-base_dir = 'C:/Users/darin/Documents/8B/tensorflow/dataTEST'
+base_dir = 'C:/Users/darin/Documents/8B/tensorflow/data'
 
 # Crear generadores de datos con división de validación
 datagen = ImageDataGenerator(
