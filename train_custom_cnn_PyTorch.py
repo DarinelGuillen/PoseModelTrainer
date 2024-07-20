@@ -17,7 +17,7 @@ train_dir = base_dir
 
 # Parámetros de imagen
 img_height, img_width = 224, 224
-batch_size = 32
+batch_size = 16
 validation_split = 0.2
 shuffle_dataset = True
 random_seed = 42
@@ -46,6 +46,9 @@ if shuffle_dataset:
     np.random.seed(random_seed)
     np.random.shuffle(indices)
 train_indices, val_indices = indices[split:], indices[:split]
+
+# Verificar que no haya solapamiento entre los índices de entrenamiento y validación
+print("Solapamiento en índices de entrenamiento y validación:", set(train_indices).intersection(val_indices))
 
 # Crear samplers para dividir los datos
 train_sampler = SubsetRandomSampler(train_indices)
@@ -96,7 +99,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Entrenamiento del modelo
-num_epochs = 10  # Aumentar el número de épocas para observar el comportamiento
+num_epochs = 3  # Aumentar el número de épocas para observar el comportamiento
 history = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': []}
 
 for epoch in range(num_epochs):
@@ -159,6 +162,11 @@ with torch.no_grad():
 
 # Verificar la distribución de las clases en el conjunto de validación
 print("Distribución de clases en el conjunto de validación:", Counter(all_labels))
+
+# Inspeccionar algunas predicciones y etiquetas reales
+print("Ejemplos de predicciones y etiquetas reales:")
+print("Predicciones:", all_preds[:10])
+print("Etiquetas Reales:", all_labels[:10])
 
 # Crear la matriz de confusión
 conf_matrix = confusion_matrix(all_labels, all_preds)

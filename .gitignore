@@ -2,6 +2,7 @@ tf_env/
 .vscode/
 keras_model.h5
 data/
+data3class/
 custom_cnn_model/
 testing data/
 annotations/

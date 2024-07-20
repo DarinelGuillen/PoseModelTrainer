@@ -16,6 +16,7 @@ Tamaño del conjunto de entrenamiento: 2513
 Tamaño del conjunto de validación: 628
 Ejemplo de etiquetas: tensor([1, 0, 0, 2, 1, 2, 1, 2, 2, 0])
 chart confusion_matrix_3.png
+==========================================
 
 
 Epoch 1/20, Train Loss: 0.7105, Train Acc: 70.79%, Val Loss: 0.1614, Val Acc: 95.38%
@@ -43,3 +44,17 @@ Tamaño del conjunto de entrenamiento: 2513
 Tamaño del conjunto de validación: 628
 Ejemplo de etiquetas: tensor([0, 2, 2, 1, 2, 2, 1, 1, 1, 0])
 chart confusion_matrix_4.png
+==========================================
+Distribución de clases en el conjunto de entrenamiento: Counter({4: 411, 8: 400, 6: 400, 2: 390, 5: 388, 7: 386, 0: 382, 11: 376, 3: 357, 12: 354, 10: 350, 1: 346, 9: 333})
+Distribución de clases en el conjunto de validación: Counter({0: 123, 2: 110, 7: 106, 3: 103, 12: 97, 5: 97, 4: 94, 6: 89, 11: 86, 8: 86, 1: 81, 10: 74, 9: 72})
+Epoch 1/3, Train Loss: 2.1317, Train Acc: 29.32%, Val Loss: 1.0689, Val Acc: 67.98%
+Epoch 2/3, Train Loss: 0.7922, Train Acc: 72.89%, Val Loss: 0.2669, Val Acc: 93.27%
+Epoch 3/3, Train Loss: 0.3331, Train Acc: 89.25%, Val Loss: 0.1112, Val Acc: 96.14%
+Distribución de clases en el conjunto de validación: Counter({0: 123, 2: 110, 7: 106, 3: 103, 12: 97, 5: 97, 4: 94, 6: 89, 11: 86, 8: 86, 1: 81, 10: 74, 9: 72})
+Tamaño total del dataset: 6091
+Tamaño del conjunto de entrenamiento: 4873
+Tamaño del conjunto de validación: 1218
+Ejemplo de etiquetas: tensor([ 4,  7, 11,  8,  3, 12,  9,  9,  9,  8])
+chart confusion_matrix_5.png  # 13 clases
+
+
