@@ -43,21 +43,7 @@ pose_classification_model = tf.keras.models.model_from_json(model_json)
 pose_classification_model.load_weights(model_weights_path)
 
 # Etiquetas de las clases
-class_labels = [
-    "1 _Up_Hand",
-    "10 _Down_View",
-    "11 _X_Pose",
-    "12 _Forward_Step",
-    "13 _Attention_Forward",
-    "2 _V_Pose",
-    "3 _Signal_Right",
-    "4 _Double_Bicep",
-    "5 _Side_Arm",
-    "6 _Stop_Hands",
-    "7 _Neutral",
-    "8 _T_Pose",
-    "9 _L_Pose"
-]
+class_labels = ["Clase1", "Clase2", "Clase3", "Clase4"]  # Reemplaza con tus propias etiquetas de clases
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
