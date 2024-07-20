@@ -12,7 +12,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
 # Directorios
-base_dir = 'C:/Users/darin/Documents/8B/tensorflow/data'
+base_dir = 'C:/Users/darin/Documents/8B/tensorflow/dataTEST'
 train_dir = base_dir
 
 # Parámetros de imagen
